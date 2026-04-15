@@ -76,11 +76,10 @@ const experiences = [
 
 type ExpCardProps = { exp: typeof experiences[0] };
 
-const ExperienceCard = forwardRef<HTMLDivElement, ExpCardProps>(({ exp }, ref) => {
+function ExperienceCard({ exp }: ExpCardProps) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
-      ref={ref}
       className="project-card neon-border"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -146,8 +145,7 @@ const ExperienceCard = forwardRef<HTMLDivElement, ExpCardProps>(({ exp }, ref) =
       </div>
     </div>
   );
-});
-ExperienceCard.displayName = "ExperienceCard";
+}
 
 export type ExperienceHandle = {
   section:     HTMLElement;
@@ -159,7 +157,6 @@ const Experience = forwardRef<ExperienceHandle>((_, ref) => {
   const sectionRef    = useRef<HTMLElement>(null);
   const titleRef      = useRef<HTMLDivElement>(null);
   const cardsTrackRef = useRef<HTMLDivElement>(null);
-  const cardRefs      = useRef<(HTMLDivElement | null)[]>([]);
 
   useImperativeHandle(ref, () => ({
     get section()    { return sectionRef.current!; },
@@ -193,11 +190,10 @@ const Experience = forwardRef<ExperienceHandle>((_, ref) => {
       </div>
 
       <div ref={cardsTrackRef} style={{ display: "flex", gap: "1.5rem", willChange: "transform" }}>
-        {experiences.map((exp, i) => (
+        {experiences.map((exp) => (
           <ExperienceCard
             key={exp.id}
             exp={exp}
-            ref={el => { cardRefs.current[i] = el; }}
           />
         ))}
       </div>
