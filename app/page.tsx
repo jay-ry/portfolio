@@ -9,6 +9,7 @@ import Hero, { type HeroHandle } from "@/components/Hero";
 import Projects, { type ProjectsHandle } from "@/components/Projects";
 import Contact, { type ContactHandle } from "@/components/Contact";
 import About, { type AboutHandle } from "@/components/About";
+import Skills, { type SkillsHandle } from "@/components/Skills";
 import Experience, { type ExperienceHandle } from "@/components/Experience";
 import Cursor from "@/components/Cursor";
 
@@ -131,6 +132,54 @@ function buildProjectsTL(titleBlock: HTMLElement, track: HTMLElement) {
   return tl;
 }
 
+/**
+ * Skills: titleBlock glitches in, columns stagger in left-to-right, hold, all glitch out.
+ */
+function buildSkillsTL(titleBlock: HTMLElement, columns: HTMLElement[]) {
+  const tl        = gsap.timeline();
+  const holdDur   = 0.6;
+  const colsEnd   = (columns.length) * STAGGER + DUR;
+  const exitStart = colsEnd + holdDur;
+
+  tl.fromTo(
+    titleBlock,
+    { opacity: 0, x: 14,  skewX: -5 },
+    { opacity: 1, x: 0,   skewX: 0,  duration: DUR, ease: "power2.out" },
+    0,
+  );
+
+  columns.forEach((col, i) => {
+    const dir = i % 2 === 0 ? 1 : -1;
+    tl.fromTo(
+      col,
+      { opacity: 0, x: dir * 14,  skewX: -dir * 5 },
+      { opacity: 1, x: 0,          skewX: 0,         duration: DUR, ease: "power2.out" },
+      (i + 1) * STAGGER,
+    );
+  });
+
+  tl.to({}, { duration: holdDur }, colsEnd);
+
+  tl.fromTo(
+    titleBlock,
+    { opacity: 1, x: 0,    skewX: 0  },
+    { opacity: 0, x: -14,  skewX: 5,  duration: DUR, ease: "power2.in" },
+    exitStart,
+  );
+
+  columns.forEach((col, i) => {
+    const dir = i % 2 === 0 ? -1 : 1;
+    tl.fromTo(
+      col,
+      { opacity: 1, x: 0,        skewX: 0        },
+      { opacity: 0, x: dir * 14, skewX: -dir * 5, duration: DUR, ease: "power2.in" },
+      exitStart + (i + 1) * STAGGER,
+    );
+  });
+
+  return tl;
+}
+
 function buildAboutTL(els: HTMLElement[]) { return buildGlitchInOutTL(els); }
 
 /**
@@ -169,6 +218,7 @@ function buildExperienceTL(titleBlock: HTMLElement, track: HTMLElement) {
 export default function Home() {
   const heroRef       = useRef<HeroHandle>(null);
   const aboutRef      = useRef<AboutHandle>(null);
+  const skillsRef     = useRef<SkillsHandle>(null);
   const projectsRef   = useRef<ProjectsHandle>(null);
   const experienceRef = useRef<ExperienceHandle>(null);
   const contactRef    = useRef<ContactHandle>(null);
@@ -182,6 +232,7 @@ export default function Home() {
 
     const hero       = heroRef.current!;
     const about      = aboutRef.current!;
+    const skills     = skillsRef.current!;
     const projects   = projectsRef.current!;
     const experience = experienceRef.current!;
     const contact    = contactRef.current!;
@@ -199,6 +250,8 @@ export default function Home() {
     gsap.set([about.titleBlock, about.bio, about.chips], { opacity: 0, x: 0, skewX: 0 });
     gsap.set(experience.titleBlock, { opacity: 0 });
     gsap.set(experience.cardsTrack, { x: 0 });
+    gsap.set(skills.titleBlock, { opacity: 0 });
+    gsap.set([...skills.columns], { opacity: 0, x: 0, skewX: 0 });
 
     // --- Hero: hold then glitch out ---
     ScrollTrigger.create({
@@ -220,6 +273,17 @@ export default function Home() {
       anticipatePin: 1,
       scrub:         SCRUB,
       animation:     buildAboutTL([about.titleBlock, about.bio, about.chips]),
+    });
+
+    // --- Skills: title + columns glitch in, hold, glitch out ---
+    ScrollTrigger.create({
+      trigger:       skills.section,
+      start:         "top top",
+      end:           "+=120%",
+      pin:           true,
+      anticipatePin: 1,
+      scrub:         SCRUB,
+      animation:     buildSkillsTL(skills.titleBlock, skills.columns),
     });
 
     // --- Projects: title glitch + horizontal card scroll ---
@@ -272,6 +336,7 @@ export default function Home() {
       <main className="grid-bg" style={{ position: "relative", zIndex: 10 }}>
         <Hero ref={heroRef} />
         <About ref={aboutRef} />
+        <Skills ref={skillsRef} />
         <Projects ref={projectsRef} />
         <Experience ref={experienceRef} />
         <Contact ref={contactRef} />
