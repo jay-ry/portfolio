@@ -60,13 +60,11 @@ function buildHeroTL(els: HTMLElement[]) {
 }
 
 /**
- * Contact starts hidden.
- * Timeline: glitch in top-to-bottom → hold → glitch out top-to-bottom.
+ * Shared helper: glitch in elements top-to-bottom, hold, glitch out.
  */
-function buildContactTL(els: HTMLElement[]) {
+function buildGlitchInOutTL(els: HTMLElement[], holdDur = 0.6) {
   const tl        = gsap.timeline();
   const enterEnd  = (els.length - 1) * STAGGER + DUR;
-  const holdDur   = 0.6;
   const exitStart = enterEnd + holdDur;
 
   els.forEach((el, i) => {
@@ -93,6 +91,8 @@ function buildContactTL(els: HTMLElement[]) {
 
   return tl;
 }
+
+function buildContactTL(els: HTMLElement[]) { return buildGlitchInOutTL(els); }
 
 /**
  * Projects: title glitches in, then all 6 cards scroll horizontally left-to-right,
@@ -131,39 +131,7 @@ function buildProjectsTL(titleBlock: HTMLElement, track: HTMLElement) {
   return tl;
 }
 
-/**
- * About: titleBlock, bio, chips glitch in top-to-bottom → hold → glitch out.
- */
-function buildAboutTL(els: HTMLElement[]) {
-  const tl        = gsap.timeline();
-  const enterEnd  = (els.length - 1) * STAGGER + DUR;
-  const holdDur   = 0.6;
-  const exitStart = enterEnd + holdDur;
-
-  els.forEach((el, i) => {
-    const dir = i % 2 === 0 ? 1 : -1;
-    tl.fromTo(
-      el,
-      { opacity: 0, x: dir * 14,  skewX: -dir * 5 },
-      { opacity: 1, x: 0,          skewX: 0,         duration: DUR, ease: "power2.out" },
-      i * STAGGER,
-    );
-  });
-
-  tl.to({}, { duration: holdDur }, enterEnd);
-
-  els.forEach((el, i) => {
-    const dir = i % 2 === 0 ? -1 : 1;
-    tl.fromTo(
-      el,
-      { opacity: 1, x: 0,        skewX: 0        },
-      { opacity: 0, x: dir * 14, skewX: -dir * 5, duration: DUR, ease: "power2.in" },
-      exitStart + i * STAGGER,
-    );
-  });
-
-  return tl;
-}
+function buildAboutTL(els: HTMLElement[]) { return buildGlitchInOutTL(els); }
 
 /**
  * Experience: title glitches in, cards scroll horizontally, title glitches out.
