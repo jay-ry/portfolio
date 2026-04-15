@@ -8,6 +8,8 @@ import Nav from "@/components/Nav";
 import Hero, { type HeroHandle } from "@/components/Hero";
 import Projects, { type ProjectsHandle } from "@/components/Projects";
 import Contact, { type ContactHandle } from "@/components/Contact";
+import About, { type AboutHandle } from "@/components/About";
+import Experience, { type ExperienceHandle } from "@/components/Experience";
 import Cursor from "@/components/Cursor";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -129,10 +131,79 @@ function buildProjectsTL(titleBlock: HTMLElement, track: HTMLElement) {
   return tl;
 }
 
+/**
+ * About: titleBlock, bio, chips glitch in top-to-bottom → hold → glitch out.
+ */
+function buildAboutTL(els: HTMLElement[]) {
+  const tl        = gsap.timeline();
+  const enterEnd  = (els.length - 1) * STAGGER + DUR;
+  const holdDur   = 0.6;
+  const exitStart = enterEnd + holdDur;
+
+  els.forEach((el, i) => {
+    const dir = i % 2 === 0 ? 1 : -1;
+    tl.fromTo(
+      el,
+      { opacity: 0, x: dir * 14,  skewX: -dir * 5 },
+      { opacity: 1, x: 0,          skewX: 0,         duration: DUR, ease: "power2.out" },
+      i * STAGGER,
+    );
+  });
+
+  tl.to({}, { duration: holdDur }, enterEnd);
+
+  els.forEach((el, i) => {
+    const dir = i % 2 === 0 ? -1 : 1;
+    tl.fromTo(
+      el,
+      { opacity: 1, x: 0,        skewX: 0        },
+      { opacity: 0, x: dir * 14, skewX: -dir * 5, duration: DUR, ease: "power2.in" },
+      exitStart + i * STAGGER,
+    );
+  });
+
+  return tl;
+}
+
+/**
+ * Experience: title glitches in, cards scroll horizontally, title glitches out.
+ */
+function buildExperienceTL(titleBlock: HTMLElement, track: HTMLElement) {
+  const tl = gsap.timeline();
+
+  tl.fromTo(
+    titleBlock,
+    { opacity: 0, x: 14,  skewX: -5 },
+    { opacity: 1, x: 0,   skewX: 0,  duration: 0.15, ease: "power2.out" },
+    0,
+  );
+
+  tl.to(
+    track,
+    {
+      x: () => -(track.scrollWidth - track.parentElement!.clientWidth + (parseFloat(getComputedStyle(track.parentElement!).paddingLeft) * 2)),
+      ease: "none",
+      duration: 0.7,
+    },
+    0.15,
+  );
+
+  tl.fromTo(
+    titleBlock,
+    { opacity: 1, x: 0,   skewX: 0  },
+    { opacity: 0, x: -14, skewX: 5, duration: 0.15, ease: "power2.in" },
+    0.85,
+  );
+
+  return tl;
+}
+
 export default function Home() {
-  const heroRef     = useRef<HeroHandle>(null);
-  const projectsRef = useRef<ProjectsHandle>(null);
-  const contactRef  = useRef<ContactHandle>(null);
+  const heroRef       = useRef<HeroHandle>(null);
+  const aboutRef      = useRef<AboutHandle>(null);
+  const projectsRef   = useRef<ProjectsHandle>(null);
+  const experienceRef = useRef<ExperienceHandle>(null);
+  const contactRef    = useRef<ContactHandle>(null);
 
   useEffect(() => {
     const lenis = new Lenis();
@@ -141,9 +212,11 @@ export default function Home() {
     gsap.ticker.add(tickerFn);
     gsap.ticker.lagSmoothing(0);
 
-    const hero     = heroRef.current!;
-    const projects = projectsRef.current!;
-    const contact  = contactRef.current!;
+    const hero       = heroRef.current!;
+    const about      = aboutRef.current!;
+    const projects   = projectsRef.current!;
+    const experience = experienceRef.current!;
+    const contact    = contactRef.current!;
 
     const heroEls    = [hero.bootLines, hero.name, hero.subTitle, hero.sub, hero.cta];
     const contactEls = [contact.titleBlock, ...contact.cards];
@@ -155,6 +228,9 @@ export default function Home() {
     gsap.set(projects.titleBlock, { opacity: 0 });
     gsap.set(projects.cardsTrack, { x: 0 });
     gsap.set([...contactEls],     { opacity: 0, x: 0, skewX: 0 });
+    gsap.set([about.titleBlock, about.bio, about.chips], { opacity: 0, x: 0, skewX: 0 });
+    gsap.set(experience.titleBlock, { opacity: 0 });
+    gsap.set(experience.cardsTrack, { x: 0 });
 
     // --- Hero: hold then glitch out ---
     ScrollTrigger.create({
@@ -167,6 +243,17 @@ export default function Home() {
       animation:     buildHeroTL(heroEls),
     });
 
+    // --- About: glitch in, hold, glitch out ---
+    ScrollTrigger.create({
+      trigger:       about.section,
+      start:         "top top",
+      end:           "+=120%",
+      pin:           true,
+      anticipatePin: 1,
+      scrub:         SCRUB,
+      animation:     buildAboutTL([about.titleBlock, about.bio, about.chips]),
+    });
+
     // --- Projects: title glitch + horizontal card scroll ---
     ScrollTrigger.create({
       trigger:       projects.section,
@@ -176,6 +263,17 @@ export default function Home() {
       anticipatePin: 1,
       scrub:         SCRUB,
       animation:     buildProjectsTL(projects.titleBlock, projects.cardsTrack),
+    });
+
+    // --- Experience: title glitch + horizontal card scroll ---
+    ScrollTrigger.create({
+      trigger:       experience.section,
+      start:         "top top",
+      end:           "+=300%",
+      pin:           true,
+      anticipatePin: 1,
+      scrub:         SCRUB,
+      animation:     buildExperienceTL(experience.titleBlock, experience.cardsTrack),
     });
 
     // --- Contact: glitch in, hold, glitch out ---
@@ -205,7 +303,9 @@ export default function Home() {
       <Nav />
       <main className="grid-bg" style={{ position: "relative", zIndex: 10 }}>
         <Hero ref={heroRef} />
+        <About ref={aboutRef} />
         <Projects ref={projectsRef} />
+        <Experience ref={experienceRef} />
         <Contact ref={contactRef} />
       </main>
     </>
