@@ -250,7 +250,7 @@ export default function Home() {
     gsap.set([about.titleBlock, about.bio, about.chips], { opacity: 0, x: 0, skewX: 0 });
     gsap.set(experience.titleBlock, { opacity: 0 });
     gsap.set(experience.cardsTrack, { x: 0 });
-    gsap.set(skills.titleBlock, { opacity: 0 });
+    gsap.set(skills.titleBlock, { opacity: 0, x: 0, skewX: 0 });
     gsap.set([...skills.columns], { opacity: 0, x: 0, skewX: 0 });
 
     // --- Hero: hold then glitch out ---

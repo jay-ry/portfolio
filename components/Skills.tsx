@@ -68,6 +68,7 @@ const domains = [
 ];
 
 function SegBar({ level }: { level: number }) {
+  const clamped = Math.max(0, Math.min(10, level));
   return (
     <div style={{ display: "flex", gap: "2px", flexShrink: 0 }}>
       {Array.from({ length: 10 }, (_, i) => (
@@ -76,8 +77,8 @@ function SegBar({ level }: { level: number }) {
           style={{
             width: "10px",
             height: "7px",
-            background: i < level ? "var(--accent)" : "transparent",
-            border: `1px solid ${i < level ? "var(--accent)" : "var(--border)"}`,
+            background: i < clamped ? "var(--accent)" : "transparent",
+            border: `1px solid ${i < clamped ? "var(--accent)" : "var(--border)"}`,
           }}
         />
       ))}
