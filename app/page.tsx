@@ -183,11 +183,13 @@ function buildSkillsTL(titleBlock: HTMLElement, columns: HTMLElement[]) {
 function buildAboutTL(els: HTMLElement[]) { return buildGlitchInOutTL(els); }
 
 /**
- * Experience: title glitches in, cards scroll horizontally, title glitches out.
+ * Experience: title glitches in, cards scroll horizontally while fading in from
+ * alternating y directions (even = above the line, odd = below), title glitches out.
  */
-function buildExperienceTL(titleBlock: HTMLElement, track: HTMLElement) {
+function buildExperienceTL(titleBlock: HTMLElement, track: HTMLElement, cards: HTMLElement[], spine: HTMLElement, spineTip: HTMLElement) {
   const tl = gsap.timeline();
 
+  // Title glitch in
   tl.fromTo(
     titleBlock,
     { opacity: 0, x: 14,  skewX: -5 },
@@ -195,6 +197,7 @@ function buildExperienceTL(titleBlock: HTMLElement, track: HTMLElement) {
     0,
   );
 
+  // Track scrolls horizontally
   tl.to(
     track,
     {
@@ -205,6 +208,35 @@ function buildExperienceTL(titleBlock: HTMLElement, track: HTMLElement) {
     0.15,
   );
 
+  // Spine grows left → right in sync with the scroll
+  tl.fromTo(
+    spine,
+    { scaleX: 0 },
+    { scaleX: 1, ease: "none", duration: 0.7 },
+    0.15,
+  );
+
+  // Tip rides the leading edge of the spine
+  tl.fromTo(
+    spineTip,
+    { x: 0 },
+    { x: () => spine.offsetWidth - 7, ease: "none", duration: 0.7 },
+    0.15,
+  );
+
+  // Cards stagger in from alternating directions as the track scrolls
+  const cardStep = 0.6 / cards.length;
+  cards.forEach((card, i) => {
+    const yDir = i % 2 === 0 ? -32 : 32;
+    tl.fromTo(
+      card,
+      { opacity: 0, y: yDir },
+      { opacity: 1, y: 0, duration: 0.12, ease: "power2.out" },
+      0.15 + i * cardStep,
+    );
+  });
+
+  // Title glitch out
   tl.fromTo(
     titleBlock,
     { opacity: 1, x: 0,   skewX: 0  },
@@ -250,6 +282,9 @@ export default function Home() {
     gsap.set([about.titleBlock, about.bio, about.chips], { opacity: 0, x: 0, skewX: 0 });
     gsap.set(experience.titleBlock, { opacity: 0 });
     gsap.set(experience.cardsTrack, { x: 0 });
+    gsap.set([...experience.cards], { opacity: 0 });
+    gsap.set(experience.spine, { scaleX: 0, transformOrigin: "left center" });
+    gsap.set(experience.spineTip, { x: 0 });
     gsap.set(skills.titleBlock, { opacity: 0, x: 0, skewX: 0 });
     gsap.set([...skills.columns], { opacity: 0, x: 0, skewX: 0 });
 
@@ -305,7 +340,7 @@ export default function Home() {
       pin:           true,
       anticipatePin: 1,
       scrub:         SCRUB,
-      animation:     buildExperienceTL(experience.titleBlock, experience.cardsTrack),
+      animation:     buildExperienceTL(experience.titleBlock, experience.cardsTrack, experience.cards, experience.spine, experience.spineTip),
     });
 
     // --- Contact: glitch in, hold, glitch out ---

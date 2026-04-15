@@ -9,7 +9,7 @@
   --grid: rgba(0, 255, 224, 0.04);
   --border: rgba(0, 255, 224, 0.15);
   --text: #c8f0ea;
-  --text-muted: #4a7a74;
+  --text-muted: #7abfb8;
   --glow: 0 0 20px rgba(0, 255, 224, 0.4);
   --glow-red: 0 0 20px rgba(255, 0, 60, 0.4);
   --font-mono: "Share Tech Mono", monospace;
@@ -120,6 +120,15 @@ body {
 /* Hero right-side info panel — hidden on narrow screens */
 @media (max-width: 768px) {
   .hero-side-panel { display: none; }
+}
+
+/* Experience timeline marker */
+.timeline-marker {
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.exp-slot:hover .timeline-marker {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent), 0 0 18px rgba(0,255,224,0.35);
 }
 
 /* Responsive project card width — overrides fixed 360px */
