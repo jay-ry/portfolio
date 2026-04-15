@@ -1,5 +1,7 @@
 "use client";
-import { forwardRef, useImperativeHandle, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+
+const MOBILE_BP = 560;
 
 const domains = [
   {
@@ -75,8 +77,8 @@ function SegBar({ level }: { level: number }) {
         <div
           key={i}
           style={{
-            width: "10px",
-            height: "7px",
+            width: "8px",
+            height: "5px",
             background: i < clamped ? "var(--accent)" : "transparent",
             border: `1px solid ${i < clamped ? "var(--accent)" : "var(--border)"}`,
           }}
@@ -93,14 +95,50 @@ export type SkillsHandle = {
 };
 
 const Skills = forwardRef<SkillsHandle>((_, ref) => {
-  const sectionRef  = useRef<HTMLElement>(null);
-  const titleRef    = useRef<HTMLDivElement>(null);
-  const columnRefs  = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef   = useRef<HTMLDivElement>(null);
+  const colRefs    = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Start all closed (SSR-safe); open all on desktop after mount
+  const [openCols, setOpenCols] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (window.innerWidth > MOBILE_BP) {
+      setOpenCols(new Set(domains.map(d => d.id)));
+    }
+
+    const onResize = () => {
+      if (window.innerWidth > MOBILE_BP) {
+        setOpenCols(new Set(domains.map(d => d.id)));
+      } else {
+        setOpenCols(new Set());
+      }
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const toggle = (id: string) => {
+    const mobile = window.innerWidth <= MOBILE_BP;
+    setOpenCols(prev => {
+      const next = new Set(prev);
+      if (mobile) {
+        // Accordion: only one open at a time
+        const wasOpen = next.has(id);
+        next.clear();
+        if (!wasOpen) next.add(id);
+      } else {
+        // Desktop: toggle independently
+        if (next.has(id)) next.delete(id); else next.add(id);
+      }
+      return next;
+    });
+  };
 
   useImperativeHandle(ref, () => ({
     get section()    { return sectionRef.current!; },
     get titleBlock() { return titleRef.current!; },
-    get columns()    { return columnRefs.current.filter(Boolean) as HTMLDivElement[]; },
+    get columns()    { return colRefs.current.filter(Boolean) as HTMLDivElement[]; },
   }), []);
 
   return (
@@ -118,7 +156,8 @@ const Skills = forwardRef<SkillsHandle>((_, ref) => {
         overflow: "hidden",
       }}
     >
-      <div ref={titleRef} style={{ marginBottom: "2.5rem", flexShrink: 0 }}>
+      {/* Title */}
+      <div ref={titleRef} style={{ marginBottom: "1.75rem", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "1rem" }}>
           <span className="section-label">003 // SKILLS</span>
           <div className="sci-divider" style={{ flex: 1, maxWidth: "300px" }} />
@@ -128,42 +167,89 @@ const Skills = forwardRef<SkillsHandle>((_, ref) => {
         </h2>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "2rem", alignItems: "start" }}>
+      {/* Columns */}
+      <div className="skills-columns">
         {domains.map((domain, i) => (
           <div
             key={domain.id}
-            ref={el => { columnRefs.current[i] = el; }}
+            ref={el => { colRefs.current[i] = el; }}
+            style={{
+              background: "linear-gradient(160deg, rgba(0,255,224,0.05) 0%, rgba(0,10,8,0.6) 100%)",
+              border: "1px solid rgba(0,255,224,0.08)",
+              borderTopColor: "rgba(0,255,224,0.35)",
+            }}
           >
-            <div style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "11px",
-              letterSpacing: "0.2em",
-              color: "var(--accent)",
-              marginBottom: "1rem",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid var(--border)",
-            }}>
-              {domain.id}
-            </div>
+            {/* Clickable header */}
+            <button
+              onClick={() => toggle(domain.id)}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "0.7rem 0.9rem",
+                background: "none",
+                border: "none",
+                borderBottom: openCols.has(domain.id) ? "1px solid rgba(0,255,224,0.12)" : "none",
+                cursor: "pointer",
+                gap: "0.5rem",
+              }}
+            >
+              <span style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "10px",
+                letterSpacing: "0.2em",
+                color: "var(--accent)",
+              }}>
+                {domain.id}
+              </span>
+              <span style={{
+                display: "inline-block",
+                width: 0,
+                height: 0,
+                borderLeft: "4px solid transparent",
+                borderRight: "4px solid transparent",
+                borderTop: "4px solid var(--accent)",
+                transition: "transform 0.25s",
+                transform: openCols.has(domain.id) ? "rotate(0deg)" : "rotate(-90deg)",
+                flexShrink: 0,
+                opacity: 0.7,
+              }} />
+            </button>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-              {domain.skills.map(skill => (
-                <div
-                  key={skill.name}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
-                    paddingBottom: "0.5rem",
-                    borderBottom: "1px solid rgba(0,255,224,0.05)",
-                  }}
-                >
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--text-muted)", letterSpacing: "0.05em" }}>
-                    {skill.name}
-                  </span>
-                  <SegBar level={skill.level} />
+            {/* Collapsible skill rows */}
+            <div style={{
+              display: "grid",
+              gridTemplateRows: openCols.has(domain.id) ? "1fr" : "0fr",
+              transition: "grid-template-rows 0.28s ease",
+            }}>
+              <div style={{ overflow: "hidden" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem", padding: "0.6rem 0.9rem 0.8rem" }}>
+                  {domain.skills.map(skill => (
+                    <div
+                      key={skill.name}
+                      className="skill-row"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      <span style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "11px",
+                        color: "var(--text-muted)",
+                        letterSpacing: "0.04em",
+                        whiteSpace: "nowrap",
+                      }}>
+                        {skill.name}
+                      </span>
+                      <SegBar level={skill.level} />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         ))}

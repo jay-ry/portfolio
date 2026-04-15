@@ -122,6 +122,43 @@ body {
   .hero-side-panel { display: none; }
 }
 
+
+/* Skills columns */
+.skills-columns {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .skills-columns {
+    grid-template-columns: repeat(3, 1fr);
+    overflow-y: auto;
+    max-height: 55vh;
+  }
+}
+@media (max-width: 560px) {
+  .skills-columns {
+    grid-template-columns: 1fr;
+    overflow-x: hidden;
+  }
+}
+
+/* Skill row — side-by-side on desktop, stacked on mobile */
+.skill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+@media (max-width: 560px) {
+  .skill-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
+  }
+}
+
 /* Experience timeline marker */
 .timeline-marker {
   transition: background 0.2s, box-shadow 0.2s;
