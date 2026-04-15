@@ -39,7 +39,7 @@ const Contact = forwardRef<ContactHandle>((_, ref) => {
     >
       <div ref={titleRef} className="contact-title-block">
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "1rem" }}>
-          <span className="section-label">004 // CONTACT</span>
+          <span className="section-label">006 // CONTACT</span>
           <div className="sci-divider" style={{ flex: 1, maxWidth: "300px" }} />
         </div>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 5vw, 4rem)", fontWeight: 700, letterSpacing: "0.05em" }}>
