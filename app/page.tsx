@@ -356,7 +356,12 @@ export default function Home() {
 
     ScrollTrigger.refresh();
 
+    const refresh = () => ScrollTrigger.refresh();
+    document.fonts?.ready.then(refresh);
+    window.addEventListener("load", refresh);
+
     return () => {
+      window.removeEventListener("load", refresh);
       lenis.destroy();
       gsap.ticker.remove(tickerFn);
       ScrollTrigger.getAll().forEach(t => t.kill());
