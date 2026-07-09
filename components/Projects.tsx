@@ -8,8 +8,7 @@ const projects = [
     desc: "Full-stack team website for a coffee brand — built end-to-end with the MERN stack. Features a dynamic menu, team profiles, and a custom CMS for content management.",
     stack: ["MongoDB", "Express", "React", "Node.js"],
     status: "LIVE",
-    color: "#00ffe0",
-    rgb: "0,255,224",
+    color: "var(--accent)",
   },
   {
     id: "002",
@@ -17,8 +16,7 @@ const projects = [
     desc: "Hardware-software smart car prototype built on Arduino Uno — autonomous obstacle avoidance, sensor fusion, and real-time motor control.",
     stack: ["Arduino", "C++", "Hardware", "IoT"],
     status: "BUILT",
-    color: "#00ffe0",
-    rgb: "0,255,224",
+    color: "var(--accent)",
   },
   {
     id: "003",
@@ -26,8 +24,7 @@ const projects = [
     desc: "Fully playable chess game with a custom AI opponent — Minimax with Alpha-Beta Pruning, piece-square tables, move ordering, and iterative deepening. Pure algorithmic AI, no ML.",
     stack: ["Python", "Pygame", "python-chess"],
     status: "BUILT",
-    color: "#7b00ff",
-    rgb: "123,0,255",
+    color: "var(--accent3)",
   },
   {
     id: "004",
@@ -35,8 +32,7 @@ const projects = [
     desc: "Real-time multiplayer Jeopardy platform — hosts generate room codes, players join on mobile and buzz in live. Full game state machine, WebSocket events, and custom board generation.",
     stack: ["React", "Socket.io", "Express", "PostgreSQL", "Prisma"],
     status: "BUILT",
-    color: "#ff003c",
-    rgb: "255,0,60",
+    color: "var(--accent2)",
   },
   {
     id: "005",
@@ -44,8 +40,7 @@ const projects = [
     desc: "Multi-tenant AI chatbot platform for local businesses — embeddable widget with RAG-powered responses, business data ingestion, analytics dashboard, and organisation management.",
     stack: ["Next.js", "Hono", "Drizzle", "PostgreSQL"],
     status: "BUILT",
-    color: "#00ffe0",
-    rgb: "0,255,224",
+    color: "var(--accent)",
   },
   {
     id: "006",
@@ -53,8 +48,7 @@ const projects = [
     desc: "AI-powered stock and crypto trading platform — real-time portfolio tracking, an AI coach reviewing your trades, an AI analyst surfacing live insights, and algorithmic strategies that execute on trigger.",
     stack: ["Python", "FastAPI", "Next.js", "AI"],
     status: "WIP",
-    color: "#7b00ff",
-    rgb: "123,0,255",
+    color: "var(--accent3)",
   },
 ];
 
@@ -69,7 +63,7 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(({ project }, r
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: hovered ? `rgba(${project.rgb},0.04)` : "rgba(5,13,20,0.8)",
+        background: hovered ? `color-mix(in srgb, ${project.color} 5%, var(--panel-bg))` : "var(--panel-bg)",
         padding: "2rem",
         position: "relative",
         overflow: "hidden",
@@ -81,7 +75,7 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(({ project }, r
       <div style={{ position: "absolute", top: 0, right: 0, width: "16px", height: "16px", background: project.color, opacity: hovered ? 1 : 0.3, transition: "opacity 0.3s" }} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
         <span style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--text-muted)" }}>{project.id}</span>
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", letterSpacing: "0.15em", color: project.status === "LIVE" ? "#00ff88" : project.status === "WIP" ? "#ffaa00" : "var(--text-muted)", border: `1px solid ${project.status === "LIVE" ? "#00ff88" : project.status === "WIP" ? "#ffaa00" : "var(--border)"}`, padding: "2px 8px" }}>
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", letterSpacing: "0.15em", color: project.status === "LIVE" ? "var(--status-color)" : project.status === "WIP" ? "#ffaa00" : "var(--text-muted)", border: `1px solid ${project.status === "LIVE" ? "var(--status-color)" : project.status === "WIP" ? "#ffaa00" : "var(--border)"}`, padding: "2px 8px" }}>
           {project.status}
         </span>
       </div>

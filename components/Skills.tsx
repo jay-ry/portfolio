@@ -174,9 +174,9 @@ const Skills = forwardRef<SkillsHandle>((_, ref) => {
             key={domain.id}
             ref={el => { colRefs.current[i] = el; }}
             style={{
-              background: "linear-gradient(160deg, rgba(0,255,224,0.05) 0%, rgba(0,10,8,0.6) 100%)",
-              border: "1px solid rgba(0,255,224,0.08)",
-              borderTopColor: "rgba(0,255,224,0.35)",
+              background: "linear-gradient(160deg, color-mix(in srgb, var(--accent) 6%, transparent) 0%, var(--panel-bg) 100%)",
+              border: "1px solid var(--border)",
+              borderTopColor: "color-mix(in srgb, var(--accent) 35%, transparent)",
             }}
           >
             {/* Clickable header */}
@@ -190,7 +190,7 @@ const Skills = forwardRef<SkillsHandle>((_, ref) => {
                 padding: "0.7rem 0.9rem",
                 background: "none",
                 border: "none",
-                borderBottom: openCols.has(domain.id) ? "1px solid rgba(0,255,224,0.12)" : "none",
+                borderBottom: openCols.has(domain.id) ? "1px solid var(--border)" : "none",
                 cursor: "pointer",
                 gap: "0.5rem",
               }}

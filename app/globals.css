@@ -12,9 +12,27 @@
   --text-muted: #7abfb8;
   --glow: 0 0 20px rgba(0, 255, 224, 0.4);
   --glow-red: 0 0 20px rgba(255, 0, 60, 0.4);
+  --panel-bg: rgba(5, 13, 20, 0.8);
+  --status-color: #00ff88;
   --font-mono: "Share Tech Mono", monospace;
   --font-display: "Orbitron", sans-serif;
   --font-body: "Rajdhani", sans-serif;
+}
+
+[data-theme="light"] {
+  --bg: #f2f6f7;
+  --bg-secondary: #e4edef;
+  --accent: #007a70;
+  --accent2: #c2003a;
+  --accent3: #5b00c2;
+  --grid: rgba(0, 90, 80, 0.05);
+  --border: rgba(0, 90, 80, 0.18);
+  --text: #0d1f1d;
+  --text-muted: #42605c;
+  --glow: 0 0 16px rgba(0, 122, 112, 0.25);
+  --glow-red: 0 0 16px rgba(194, 0, 58, 0.25);
+  --panel-bg: rgba(255, 255, 255, 0.75);
+  --status-color: #0a9b4a;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

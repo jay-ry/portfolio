@@ -1,6 +1,7 @@
 "use client";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { useTheme } from "next-themes";
 import * as THREE from "three";
 
 function Particles({ count = 2000 }) {
@@ -39,7 +40,7 @@ function Particles({ count = 2000 }) {
   );
 }
 
-function GridPlane() {
+function GridPlane({ color }: { color: string }) {
   const ref = useRef<THREE.Mesh>(null);
   const elapsed = useRef(0);
   useFrame((_, delta) => {
@@ -49,18 +50,29 @@ function GridPlane() {
   return (
     <mesh ref={ref} rotation={[-Math.PI / 2, 0, 0]} position={[0, -4, 0]}>
       <planeGeometry args={[40, 40, 30, 30]} />
-      <meshBasicMaterial color="#00ffe0" wireframe opacity={0.06} transparent />
+      <meshBasicMaterial color={color} wireframe opacity={0.06} transparent />
     </mesh>
   );
 }
 
 export default function Scene() {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // resolvedTheme is only known on the client; before mount, fall back to the
+  // dark palette so SSR output matches the site's default appearance.
+  useEffect(() => setMounted(true), []);
+  const light = mounted && resolvedTheme === "light";
+
+  const fogColor = light ? "#e8eef0" : "#020408";
+  const gridColor = light ? "#007a70" : "#00ffe0";
+
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
       <Canvas camera={{ position: [0, 0, 8], fov: 75 }}>
         <Particles />
-        <GridPlane />
-        <fog attach="fog" args={["#020408", 10, 30]} />
+        <GridPlane color={gridColor} />
+        <fog attach="fog" args={[fogColor, 10, 30]} />
       </Canvas>
     </div>
   );

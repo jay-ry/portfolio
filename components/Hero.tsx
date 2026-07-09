@@ -46,7 +46,7 @@ const Hero = forwardRef<HeroHandle>((_, ref) => {
       <div ref={bootRef} style={{ marginBottom: "2rem", fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--text-muted)" }}>
         <div>SYSTEM BOOT... <span style={{ color: "var(--accent)" }}>OK</span></div>
         <div>LOADING PROFILE: <span style={{ color: "var(--accent)" }}>JAY ANDRADE</span></div>
-        <div>STATUS: <span style={{ color: "#00ff88" }}>■ ONLINE</span></div>
+        <div>STATUS: <span style={{ color: "var(--status-color)" }}>■ ONLINE</span></div>
       </div>
 
       <div style={{ display: "flex", alignItems: "baseline", gap: "1rem", marginBottom: "0.5rem" }}>
@@ -65,7 +65,7 @@ const Hero = forwardRef<HeroHandle>((_, ref) => {
           color: "var(--accent)",
           lineHeight: 0.9,
           letterSpacing: "-0.02em",
-          textShadow: "0 0 40px rgba(0,255,224,0.3)",
+          textShadow: "0 0 40px color-mix(in srgb, var(--accent) 30%, transparent)",
         }}
       >
         JAY
@@ -135,7 +135,7 @@ const Hero = forwardRef<HeroHandle>((_, ref) => {
       <div className="hero-side-panel" style={{ position: "absolute", top: "30%", right: "6vw", fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--text-muted)", textAlign: "right", lineHeight: 2 }}>
         <div>STACK: REACT / PYTHON / AI</div>
         <div>LOCATION: <span style={{ color: "var(--accent)" }}>DUBAI, UAE</span></div>
-        <div>STATUS: <span style={{ color: "#00ff88" }}>AVAILABLE</span></div>
+        <div>STATUS: <span style={{ color: "var(--status-color)" }}>AVAILABLE</span></div>
       </div>
     </section>
   );

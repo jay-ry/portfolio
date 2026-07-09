@@ -85,9 +85,9 @@ const ExperienceCard = forwardRef<HTMLDivElement, ExpCardProps>(({ exp }, ref) =
         padding: "0.9rem 1rem 0.9rem 1.1rem",
         position: "relative",
         cursor: "default",
-        borderLeft: `2px solid ${hovered ? "var(--accent)" : "rgba(0,255,224,0.2)"}`,
-        borderTop: `1px solid ${hovered ? "rgba(0,255,224,0.25)" : "rgba(0,255,224,0.07)"}`,
-        background: hovered ? "rgba(0,255,224,0.03)" : "transparent",
+        borderLeft: `2px solid ${hovered ? "var(--accent)" : "color-mix(in srgb, var(--accent) 20%, transparent)"}`,
+        borderTop: `1px solid ${hovered ? "color-mix(in srgb, var(--accent) 25%, transparent)" : "color-mix(in srgb, var(--accent) 7%, transparent)"}`,
+        background: hovered ? "color-mix(in srgb, var(--accent) 3%, transparent)" : "transparent",
         transition: "border-color 0.25s, background 0.25s",
       }}
     >
@@ -215,7 +215,7 @@ const Experience = forwardRef<ExperienceHandle>((_, ref) => {
             width: "100%",
             height: "3px",
             background: "linear-gradient(90deg, transparent 0%, var(--accent) 6%, var(--accent) 100%)",
-            boxShadow: "0 0 8px rgba(0,255,224,0.5)",
+            boxShadow: "0 0 8px color-mix(in srgb, var(--accent) 50%, transparent)",
             opacity: 0.75,
             transformOrigin: "left center",
             pointerEvents: "none",

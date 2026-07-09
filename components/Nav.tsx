@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -27,7 +28,7 @@ export default function Nav() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: scrolled ? "rgba(2,4,8,0.95)" : "transparent",
+        background: scrolled ? "var(--panel-bg)" : "transparent",
         borderBottom: scrolled ? "1px solid var(--border)" : "1px solid transparent",
         backdropFilter: scrolled ? "blur(12px)" : "none",
         transition: "all 0.4s",
@@ -39,7 +40,10 @@ export default function Nav() {
         <span className="blink" style={{ marginLeft: 4 }}>_</span>
       </span>
 
-      <span style={{ color: "var(--text-muted)", fontSize: "11px" }}>{time}</span>
+      <span style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <span style={{ color: "var(--text-muted)", fontSize: "11px" }}>{time}</span>
+        <ThemeToggle />
+      </span>
     </nav>
   );
 }
