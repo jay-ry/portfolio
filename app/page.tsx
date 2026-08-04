@@ -11,7 +11,11 @@ import Contact, { type ContactHandle } from "@/components/Contact";
 import About, { type AboutHandle } from "@/components/About";
 import Skills, { type SkillsHandle } from "@/components/Skills";
 import Experience, { type ExperienceHandle } from "@/components/Experience";
+import AiGuideSection, { type AiGuideHandle } from "@/components/AiGuideSection";
 import Cursor from "@/components/Cursor";
+import ChatLauncher from "@/components/chat/ChatLauncher";
+import ChatOverlay from "@/components/chat/ChatOverlay";
+import { registerLenis } from "@/lib/chat/scroll";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -252,11 +256,14 @@ export default function Home() {
   const aboutRef      = useRef<AboutHandle>(null);
   const skillsRef     = useRef<SkillsHandle>(null);
   const projectsRef   = useRef<ProjectsHandle>(null);
+  const aiGuideRef    = useRef<AiGuideHandle>(null);
   const experienceRef = useRef<ExperienceHandle>(null);
   const contactRef    = useRef<ContactHandle>(null);
 
   useEffect(() => {
     const lenis = new Lenis();
+    // Let chat navigation drive the same smooth scroll instead of fighting it.
+    registerLenis(lenis);
     lenis.on("scroll", ScrollTrigger.update);
     const tickerFn = (time: number) => { lenis.raf(time * 1000); };
     gsap.ticker.add(tickerFn);
@@ -266,6 +273,7 @@ export default function Home() {
     const about      = aboutRef.current!;
     const skills     = skillsRef.current!;
     const projects   = projectsRef.current!;
+    const aiGuide    = aiGuideRef.current!;
     const experience = experienceRef.current!;
     const contact    = contactRef.current!;
 
@@ -280,6 +288,7 @@ export default function Home() {
     gsap.set(projects.cardsTrack, { x: 0 });
     gsap.set([...contactEls],     { opacity: 0, x: 0, skewX: 0 });
     gsap.set([about.titleBlock, about.bio, about.chips], { opacity: 0, x: 0, skewX: 0 });
+    gsap.set([aiGuide.titleBlock, aiGuide.intro, aiGuide.panel], { opacity: 0, x: 0, skewX: 0 });
     gsap.set(experience.titleBlock, { opacity: 0 });
     gsap.set(experience.cardsTrack, { x: 0 });
     gsap.set([...experience.cards], { opacity: 0 });
@@ -332,6 +341,17 @@ export default function Home() {
       animation:     buildProjectsTL(projects.titleBlock, projects.cardsTrack),
     });
 
+    // --- AI Guide: glitch in, hold, glitch out ---
+    ScrollTrigger.create({
+      trigger:       aiGuide.section,
+      start:         "top top",
+      end:           "+=120%",
+      pin:           true,
+      anticipatePin: 1,
+      scrub:         SCRUB,
+      animation:     buildGlitchInOutTL([aiGuide.titleBlock, aiGuide.intro, aiGuide.panel]),
+    });
+
     // --- Experience: title glitch + horizontal card scroll ---
     ScrollTrigger.create({
       trigger:       experience.section,
@@ -362,6 +382,7 @@ export default function Home() {
 
     return () => {
       window.removeEventListener("load", refresh);
+      registerLenis(null);
       lenis.destroy();
       gsap.ticker.remove(tickerFn);
       ScrollTrigger.getAll().forEach(t => t.kill());
@@ -378,9 +399,13 @@ export default function Home() {
         <About ref={aboutRef} />
         <Skills ref={skillsRef} />
         <Projects ref={projectsRef} />
+        <AiGuideSection ref={aiGuideRef} />
         <Experience ref={experienceRef} />
         <Contact ref={contactRef} />
       </main>
+      {/* Chat lives outside <main> — sections are GSAP-pinned and would clip a fixed overlay. */}
+      <ChatLauncher />
+      <ChatOverlay />
     </>
   );
 }

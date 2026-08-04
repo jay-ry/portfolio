@@ -202,3 +202,136 @@ body {
   .contact-title-block { margin-bottom: 2rem; }
   .contact-footer { margin-top: 2.5rem; padding-top: 1.5rem; }
 }
+
+/* ===== CHAT ===== */
+
+@keyframes chatLauncherPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(0,255,224,0.15), inset 0 0 12px rgba(0,255,224,0.04); }
+  50%      { box-shadow: 0 0 22px rgba(0,255,224,0.35), inset 0 0 16px rgba(0,255,224,0.08); }
+}
+.chat-launcher-pulse { animation: chatLauncherPulse 2.6s ease-in-out infinite; }
+
+@keyframes chatSlideUp {
+  from { transform: translateY(100%); opacity: 0.6; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes chatSlideInRight {
+  from { transform: translateX(100%); opacity: 0.6; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes chatBackdropFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Mobile-first: near-fullscreen bottom sheet. */
+.chat-overlay-panel {
+  position: fixed;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  top: auto;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 90vh;
+  animation: chatSlideUp 0.32s ease-out both;
+}
+/* The panel is never unmounted — its transcript is a live region and has to
+   exist in the DOM before the first answer lands, or screen readers drop the
+   announcement. It is hidden instead, and this rule is required because the
+   author-level `display: flex` above outranks the UA stylesheet's [hidden].
+   Going through display:none also restarts the slide-in animation on every
+   open, which is exactly the behaviour remounting used to provide. */
+.chat-overlay-panel[hidden] { display: none; }
+
+.chat-overlay-backdrop { animation: chatBackdropFadeIn 0.25s ease-out both; }
+
+/* Desktop: right-side non-modal panel, full height. 768.99px, not 769px —
+   it is the exact complement of MOBILE_QUERY ("max-width: 768.98px") in
+   ChatProvider.tsx. With a 768px/769px pair, a fractional viewport width
+   (browser zoom, Windows DPI scaling, iPad Safari) satisfies NEITHER query:
+   CSS laid out the mobile bottom sheet while JS reported desktop, producing
+   a full-viewport sheet with no backdrop, focus trap or scroll lock. */
+@media (min-width: 768.99px) {
+  .chat-overlay-panel {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    width: 440px;
+    height: 100vh;
+    animation: chatSlideInRight 0.3s ease-out both;
+  }
+}
+
+@media (max-width: 640px) {
+  .chat-launcher-label { display: none; }
+  .chat-launcher-pulse { padding: 0.85rem !important; }
+}
+
+.chat-overlay-panel a:focus-visible,
+.chat-overlay-panel button:focus-visible,
+.chat-overlay-panel textarea:focus-visible,
+.chat-launcher-pulse:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The command menu uses aria-activedescendant: DOM focus stays on the
+   textarea and an option is never itself focused, so the :focus-visible rule
+   that used to live here could never match. This is the equivalent ring for
+   the virtually-focused option. */
+.chat-overlay-panel li[role="option"][aria-selected="true"] {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-launcher-pulse,
+  .chat-overlay-panel,
+  .chat-overlay-backdrop {
+    animation: none !important;
+  }
+}
+
+/* ===== /CHAT ===== */
+
+/* ===== AI GUIDE SECTION ===== */
+
+/* Two columns on desktop, stacked on mobile. Mirrors the Skills/Projects idiom. */
+.ai-guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.ai-guide-panel {
+  width: 100%;
+}
+
+.ai-guide-cta {
+  transition: color 0.2s, background 0.2s;
+}
+.ai-guide-cta:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+@media (max-width: 900px) {
+  .ai-guide-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+  /* The terminal preview is decorative — drop it before the copy and CTA get cramped. */
+  .ai-guide-panel {
+    display: none;
+  }
+}
+
+/* ===== /AI GUIDE SECTION ===== */

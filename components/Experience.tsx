@@ -185,7 +185,7 @@ const Experience = forwardRef<ExperienceHandle>((_, ref) => {
       {/* Title */}
       <div ref={titleRef} style={{ marginBottom: "2.5rem", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "1rem" }}>
-          <span className="section-label">005 // EXPERIENCE</span>
+          <span className="section-label">006 // EXPERIENCE</span>
           <div className="sci-divider" style={{ flex: 1, maxWidth: "300px" }} />
         </div>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 5vw, 4rem)", fontWeight: 700, color: "var(--text)", letterSpacing: "0.05em" }}>

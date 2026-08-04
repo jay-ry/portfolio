@@ -5,5 +5,5 @@ npm-debug.log
 README.md
 .next
 .env
-.env.local
+.env.*
 .DS_Store

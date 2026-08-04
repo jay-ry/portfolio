@@ -7,3 +7,34 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
+
+      # --- AI chat ---------------------------------------------------------
+      # Values are read from a `.env` file sitting next to this compose file
+      # (gitignored) or from the host environment. Each falls back to the same
+      # default the application code uses, so an unset variable is harmless.
+      #
+      # Without GROQ_API_KEY the site still builds and serves normally — the
+      # chat reports itself offline and the other six sections are unaffected.
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - CHAT_MODEL=${CHAT_MODEL:-openai/gpt-oss-120b}
+      - CHAT_MODEL_FALLBACK=${CHAT_MODEL_FALLBACK:-openai/gpt-oss-20b}
+      - CHAT_REQUEST_TIMEOUT_MS=${CHAT_REQUEST_TIMEOUT_MS:-20000}
+      - CHAT_RATE_LIMIT_WINDOW_MS=${CHAT_RATE_LIMIT_WINDOW_MS:-60000}
+      # 6/min tracks Groq's free-tier budget (8000 tokens/min per model, ~2200
+      # per grounded request). Raise it if you upgrade your Groq tier.
+      - CHAT_RATE_LIMIT_MAX=${CHAT_RATE_LIMIT_MAX:-6}
+
+      # Number of reverse proxies between the public internet and this
+      # container. Used to find the real client IP for rate limiting.
+      #
+      # Set to 1 because this service publishes no ports and is reached by
+      # domain routing — exactly one proxy terminates traffic in front of it.
+      #   0  container is exposed directly to the internet
+      #   1  one reverse proxy (nginx / platform router) in front  <-- current
+      #   2  a CDN (Cloudflare etc.) in front of that proxy
+      #
+      # Too HIGH is the dangerous direction: each surplus hop hands one more
+      # forged X-Forwarded-For entry back to the caller, letting a visitor pick
+      # their own rate-limit bucket and spend your API quota without limit.
+      # Too low is merely coarse — visitors share a bucket.
+      - TRUSTED_PROXY_HOPS=${TRUSTED_PROXY_HOPS:-1}
