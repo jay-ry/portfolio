@@ -58,7 +58,7 @@ export function AnswerActions({ actions }: AnswerActionsProps) {
                 // to have appeared. The href stays for middle-click, right-
                 // click and keyboard semantics; only the plain click is taken.
                 if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-                if (scrollToSection(action.anchor)) e.preventDefault();
+                if (scrollToSection(action.anchor, action.projectId)) e.preventDefault();
               }}
             >
               {action.label}

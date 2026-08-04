@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from "react";
 import type { ChatAction } from "@/lib/chat/types";
+import { isValidAnchor } from "@/lib/chat/types";
 import type { Project } from "@/lib/portfolio-data";
 import { AnswerActions } from "./AnswerActions";
 
@@ -24,17 +25,25 @@ function isHttpsUrl(url: string): boolean {
 }
 
 /**
- * Per-card EXTERNAL links only, and only in the list.
+ * Actions for a card in the LIST only.
  *
- * The message already carries its own actions (built by `projectActions` in
- * lib/chat/commands.ts) and ChatMessageView renders those beneath the view, so
- * anything added here on the detail card would simply appear twice. The list is
- * the one case the message can't cover: it has a single shared "Go to Projects"
- * button, but each project may have its own live/repo URL.
+ * The detail card adds none: its message already carries them (see
+ * `projectActions` in lib/chat/commands.ts) and ChatMessageView renders those
+ * beneath the view, so anything here would show twice. The list is different —
+ * its message has a single shared "Go to Projects", while each card here can
+ * target its own position in the horizontal track and its own live/repo URLs.
  */
-function buildListExternals(project: Project): ChatAction[] {
+function buildListActions(project: Project): ChatAction[] {
   const actions: ChatAction[] = [];
 
+  if (isValidAnchor(project.sectionAnchor)) {
+    actions.push({
+      kind: "scroll",
+      anchor: project.sectionAnchor,
+      label: `View ${project.name}`,
+      projectId: project.id,
+    });
+  }
   if (project.liveUrl && isHttpsUrl(project.liveUrl)) {
     actions.push({ kind: "external", url: project.liveUrl, label: `Open ${project.name}` });
   }
@@ -120,7 +129,7 @@ export interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, variant = "detail" }: ProjectCardProps) {
-  const actions = variant === "list" ? buildListExternals(project) : [];
+  const actions = variant === "list" ? buildListActions(project) : [];
 
   return (
     <article style={{ ...cardStyle, borderLeftColor: project.color }}>

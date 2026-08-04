@@ -13,8 +13,11 @@ export type ChatRole = "user" | "assistant" | "system";
 
 // Actions are strictly allowlisted — no arbitrary URLs.
 export type ChatAction =
-  // anchor must be one of the section anchors (see SECTION_ANCHORS)
-  | { kind: "scroll"; anchor: string; label: string }
+  // anchor must be one of the section anchors (see SECTION_ANCHORS).
+  // `projectId` narrows the target to a single card inside the horizontally
+  // scrolling Projects section, so "view Biz-Bot" lands on Biz-Bot rather than
+  // at the start of the track. Ignored for every other anchor.
+  | { kind: "scroll"; anchor: string; label: string; projectId?: string }
   // only http(s), only project liveUrl/repoUrl or contactLinks hrefs
   | { kind: "external"; url: string; label: string }
   | { kind: "email"; href: string; label: string };

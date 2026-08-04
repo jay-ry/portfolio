@@ -61,7 +61,9 @@ function matchesAny(haystack: string, patterns: RegExp[]): boolean {
 function actionKey(action: ChatAction): string {
   switch (action.kind) {
     case "scroll":
-      return `scroll:${action.anchor}`;
+      // projectId is part of the target: two cards in the same section are
+      // different destinations, not duplicates.
+      return `scroll:${action.anchor}:${action.projectId ?? ""}`;
     case "external":
       return `external:${action.url}`;
     case "email":
@@ -113,10 +115,14 @@ export function deriveActions(answerText: string): ChatAction[] {
     // scroll action. Naming a single project is only honest when exactly one
     // was mentioned — otherwise the button would advertise whichever happened
     // to be listed first in the data.
+    // When exactly one project was named we can also point at its card inside
+    // the horizontally scrolling track, so "VIEW BIZ-BOT" lands on Biz-Bot
+    // instead of the start of the section.
     push({
       kind: "scroll",
       anchor: "projects",
       label: named.length === 1 ? `VIEW ${named[0].name}` : "VIEW PROJECTS",
+      ...(named.length === 1 ? { projectId: named[0].id } : {}),
     });
 
     // External links stay per-project (deduped by URL). Both fields are

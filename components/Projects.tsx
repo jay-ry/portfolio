@@ -59,6 +59,8 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(({ project }, r
   return (
     <div
       ref={ref}
+      // Lets chat navigation scroll to this exact card, not just the section.
+      data-project-id={project.id}
       className="project-card neon-border"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

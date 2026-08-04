@@ -208,7 +208,10 @@ function projectDetailBody(p: Project): string {
 }
 
 function projectActions(p: Project): ChatAction[] {
-  const actions: ChatAction[] = [...scrollTo(p.sectionAnchor, "View in Projects")];
+  // projectId so the button lands on this card, not the start of the track.
+  const actions: ChatAction[] = isValidAnchor(p.sectionAnchor)
+    ? [{ kind: "scroll", anchor: p.sectionAnchor, label: `View ${p.name}`, projectId: p.id }]
+    : [];
 
   if (p.liveUrl && isHttpUrl(p.liveUrl)) {
     actions.push({ kind: "external", url: p.liveUrl, label: `Open ${p.name}` });
