@@ -1,6 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
+
+const navLinks = [
+  { label: "ABOUT", href: "/about" },
+  { label: "PROJECTS", href: "/projects" },
+  { label: "CONTACT", href: "/contact" },
+];
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -35,9 +42,16 @@ export default function Nav() {
         fontFamily: "var(--font-mono)",
       }}
     >
-      <span style={{ color: "var(--accent)", fontSize: "13px", letterSpacing: "0.1em" }}>
-        <span style={{ color: "var(--text-muted)" }}>// </span>JAY.OS
+      <Link href="/" aria-label="Jay Andrade home" style={{ color: "var(--accent)", fontSize: "13px", letterSpacing: "0.1em", textDecoration: "none" }}>
+        <span style={{ color: "var(--text-muted)" }}>{"// "}</span>JAY.OS
         <span className="blink" style={{ marginLeft: 4 }}>_</span>
+      </Link>
+
+      <span className="site-nav-links" style={{ alignItems: "center", gap: "1.25rem" }}>
+        {navLinks.map(link => (
+          <Link key={link.href} href={link.href} className="site-nav-link">{link.label}</Link>
+        ))}
+        <a href="https://games.jayandrade.com" target="_blank" rel="noopener noreferrer" className="site-nav-link site-nav-games">GAMES ↗</a>
       </span>
 
       <span style={{ display: "flex", alignItems: "center", gap: "1rem" }}>

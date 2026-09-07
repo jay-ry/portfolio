@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import Nav from "@/components/Nav";
 import Hero, { type HeroHandle } from "@/components/Hero";
 import Projects, { type ProjectsHandle } from "@/components/Projects";
 import Contact, { type ContactHandle } from "@/components/Contact";
@@ -12,7 +11,6 @@ import About, { type AboutHandle } from "@/components/About";
 import Skills, { type SkillsHandle } from "@/components/Skills";
 import Experience, { type ExperienceHandle } from "@/components/Experience";
 import AiGuideSection, { type AiGuideHandle } from "@/components/AiGuideSection";
-import Cursor from "@/components/Cursor";
 import ChatLauncher from "@/components/chat/ChatLauncher";
 import ChatOverlay from "@/components/chat/ChatOverlay";
 import { registerLenis } from "@/lib/chat/scroll";
@@ -391,9 +389,7 @@ export default function Home() {
 
   return (
     <>
-      <Cursor />
       <Scene />
-      <Nav />
       <main className="grid-bg" style={{ position: "relative", zIndex: 10 }}>
         <Hero ref={heroRef} />
         <About ref={aboutRef} />
