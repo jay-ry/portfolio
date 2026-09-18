@@ -26,6 +26,19 @@ export interface Project {
   liveUrl?: string;
   repoUrl?: string;
   sectionAnchor: string;
+  // Only set where the project's source was available to write the detail from.
+  caseStudy?: string[];
+}
+
+export interface ExternalProject {
+  id: string;
+  name: string;
+  tagline: string;
+  desc: string;
+  stack: string[];
+  status: string;
+  liveUrl: string;
+  caseStudy: string[];
 }
 
 export interface SkillDomain {
@@ -146,8 +159,32 @@ export const projects: Project[] = [
     status: "WIP",
     color: "var(--accent3)",
     sectionAnchor: "projects",
+    caseStudy: [
+      "The build underway is a self-hosted algorithmic crypto trading system: a FastAPI and PostgreSQL backend with a Next.js dashboard in front of it, running two parallel trading runtimes from one codebase and one database — one wired to Binance's spot testnet, one to a fully internal simulator. Which environment a row belongs to is a column, not a separate deployment, so both halves of the system stay honest with each other.",
+      "The simulator is the part worth describing. It is a virtual broker that holds no exchange credentials at all, so there is no path by which a real order could leave it. Fills are priced off live top-of-book data and then deliberately moved against the trader: a per-pair half-spread, plus slippage scaled by how much of the visible depth the order would eat, capped at 200 basis points. An order larger than a quarter of the book is rejected outright rather than filled at a price nobody could have got. Stale market data, lot-size and minimum-notional filters, and an unaffordable debit against the virtual wallet all produce recorded rejections. A strategy that only looks profitable because the simulator was generous has told you nothing, so the simulator is built not to be generous.",
+      "Every order leaves through a single execution boundary, and in front of it sits a risk engine written as a pure evaluator — it reports breaches and never mutates state or places orders itself. It gates each entry on position sizing, risk-per-trade measured against stop distance, total open risk, per-symbol and per-strategy exposure, correlated-group exposure, open position count, and rolling weekly loss. Rejections are persisted as auditable events rather than silently dropped.",
+      "A drawdown breach past the configured threshold latches a kill switch. It raises a critical alert, blocks every new entry while leaving exits open, and, when configured to, sweeps all open positions out through that same execution boundary — retrying and escalating if anything is left stranded. Resetting the switch only unlatches it; it never re-opens what it closed. A separate reconciliation pass audits the books against themselves, checking that the change in equity genuinely equals realised plus unrealised profit within a float-rounding tolerance and flagging the residual when it does not.",
+      "The least glamorous problem was the most instructive: the tick and audit tables outgrew 32-bit primary keys. Widening them naively would have taken an exclusive lock and rewritten a live table, so the migration adds a shadow column, keeps it in step with a trigger, backfills in batches, builds the replacement index concurrently, and then swaps the columns under a short lock timeout.",
+    ],
   },
 ];
+
+export const hotStreak: ExternalProject = {
+  id: "007",
+  name: "HOT STREAK",
+  tagline: "DAILY PUZZLE PLATFORM",
+  desc: "A daily puzzle platform with six original word and logic games, each publishing a new puzzle every day.",
+  stack: ["Next.js", "Express", "TypeScript", "PostgreSQL", "Drizzle", "Turbo", "Playwright"],
+  status: "LIVE",
+  liveUrl: "https://games.jayandrade.com",
+  caseStudy: [
+    "Hot Streak is a daily puzzle platform running six original games — Intersect, Sequence, Link, Origins, Compass and Lockstep — each of which publishes a new puzzle every day. It is a pnpm monorepo: a Next.js App Router front end, an Express and TypeScript API, PostgreSQL through Drizzle, Turbo orchestrating the build, Vitest and Playwright covering it, deployed with Dokploy behind Traefik.",
+    "All six games share a single engine contract. Each one implements the same small interface — resolve the public puzzle, create initial state, apply an action, decide whether the state is complete, build a result — and registers itself in one registry, so the API drives every game through the same generic dispatch pattern — one gameKey-parameterised route per action — with no per-game branching in any handler. The abstraction is harder than it sounds, because underneath it the games agree on almost nothing. Lockstep moves two pieces simultaneously and keeps a capped move history so a player can undo or restart. Origins is an ordered run of binary questions that rejects an answer arriving out of sequence. Compass, Sequence and Link are guess-based with attempt limits, and each has its own definition of a solve worth counting. The contract survives because the shared spine is mandatory and the awkward parts — extra state fields, terminal payloads, whether an attempt qualifies for a streak — are optional hooks rather than one forced common shape.",
+    "The genuinely hard problem is content. Puzzles are either authored as files in the repo or generated, and both have to survive a redeploy without breaking games already in progress. Every puzzle carries a fingerprint: its source is canonicalised, with object keys sorted recursively, then hashed together with the game key, date and source version. On each deploy the seeder compares that fingerprint against what is already published and rebuilds anything that has drifted. Generated puzzles get a stricter pass — the reconciler rebuilds each published puzzle from current source data, diffs the result, and classifies it as keep, refresh or replace, so a puzzle whose underlying dataset was corrected, or whose stored payload no longer validates against the current schema, is caught before a player ever loads it.",
+    "Nothing is edited in place. Publishing is transactional and versioned: a replaced puzzle is retired at its old version with every attempt, result and streak still attached to it, and the new one is inserted alongside. A separate job runs on boot and every twenty-four hours after it, keeping thirty days of puzzles published ahead of the current date and using per-generator cooldowns so recent answers do not come round again too soon.",
+    "Players never create an account. Identity is a signed cookie — a UUID plus an HMAC signature verified in constant time against a server-side secret — issued on the first request and good for four hundred days, with the web app proxying API calls over the internal Docker network so that cookie stays first-party. Streaks are computed on UTC calendar days by a strict parser that rejects impossible dates outright instead of letting them silently roll over, and completions are written under a row-level lock so two games finishing at the same moment cannot corrupt a count. A backdated completion — a stale puzzle finished late — is recorded, but deliberately does not advance the live streak.",
+  ],
+};
 
 // ---------------------------------------------------------------------------
 // Skills — components/Skills.tsx (level is 0-10)

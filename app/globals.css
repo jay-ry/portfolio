@@ -144,6 +144,7 @@ body {
 .content-back-link { color: var(--accent); display: inline-block; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; margin-top: 3rem; text-decoration: none; }
 .project-page-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
 .project-page-meta { color: var(--text-muted); display: flex; font-family: var(--font-mono); font-size: 11px; justify-content: space-between; letter-spacing: 0.12em; margin-bottom: 1rem; }
+.project-page-card-full { grid-column: 1 / -1; }
 .project-stack { border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 12px !important; letter-spacing: 0.06em; margin-top: 1.25rem !important; padding-top: 1rem; }
 .games-callout { align-items: center; background: color-mix(in srgb, var(--accent) 5%, var(--panel-bg)); display: flex; gap: 2rem; justify-content: space-between; padding: clamp(1.5rem, 4vw, 2.5rem); }
 .games-callout a { border: 1px solid var(--accent); color: var(--accent); flex-shrink: 0; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; padding: 0.9rem 1.1rem; text-decoration: none; }

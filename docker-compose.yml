@@ -38,3 +38,15 @@ services:
       # their own rate-limit bucket and spend your API quota without limit.
       # Too low is merely coarse — visitors share a bucket.
       - TRUSTED_PROXY_HOPS=${TRUSTED_PROXY_HOPS:-1}
+
+      # --- Ad consent by region --------------------------------------------
+      # Name of the request header a proxy in front of this container sets to
+      # the visitor's ISO country code — `cf-ipcountry` when Cloudflare proxies
+      # the domain. It decides who must opt IN to the AdSense script (EEA, UK,
+      # Switzerland, and any visitor whose country is unknown) and who gets it
+      # by default with an opt-out.
+      #
+      # Leave it EMPTY unless a proxy you control OVERWRITES that header on
+      # every request. Empty means every visitor is asked for consent, which is
+      # the safe answer; a header nothing overwrites is one a visitor can forge.
+      - CONSENT_COUNTRY_HEADER=${CONSENT_COUNTRY_HEADER:-}

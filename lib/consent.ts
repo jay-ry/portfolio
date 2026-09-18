@@ -1,5 +1,16 @@
 export type ConsentChoice = "accepted" | "rejected";
 
+/**
+ * `consent-required` is the fail-safe: it also covers a visitor whose country
+ * could not be determined, not only a confirmed EEA/UK/Swiss one.
+ */
+export type ConsentRegion = "consent-required" | "default-allow";
+
+export function adsAllowed(choice: ConsentChoice | null, region: ConsentRegion): boolean {
+  if (choice !== null) return choice === "accepted";
+  return region === "default-allow";
+}
+
 const STORAGE_KEY = "cookie-consent";
 
 type Listener = () => void;

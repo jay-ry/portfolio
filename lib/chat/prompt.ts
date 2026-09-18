@@ -16,6 +16,7 @@
 
 import {
   contactLinks,
+  hotStreak,
   profile,
   projects,
   roles,
@@ -58,7 +59,18 @@ function composeKnowledgeBlock(): string {
     // Omit the line entirely rather than emitting an empty or "undefined" value.
     if (project.liveUrl) lines.push(`live: ${project.liveUrl}`);
     if (project.repoUrl) lines.push(`repo: ${project.repoUrl}`);
+    if (project.caseStudy) {
+      for (const paragraph of project.caseStudy) lines.push(`detail: ${paragraph}`);
+    }
   }
+
+  lines.push("");
+  lines.push(`[project:${hotStreak.id}] ${hotStreak.name} — ${hotStreak.tagline}`);
+  lines.push(`status: ${hotStreak.status}`);
+  lines.push(`stack: ${hotStreak.stack.join(", ")}`);
+  lines.push(`about: ${hotStreak.desc}`);
+  lines.push(`live: ${hotStreak.liveUrl}`);
+  for (const paragraph of hotStreak.caseStudy) lines.push(`detail: ${paragraph}`);
 
   // --- skills --------------------------------------------------------------
   lines.push("");

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { takeLastTrigger } from "@/lib/consent";
+import { takeLastTrigger, type ConsentRegion } from "@/lib/consent";
 import { useConsent } from "./useConsent";
 
 /**
@@ -13,7 +13,7 @@ import { useConsent } from "./useConsent";
  * close — never on the automatic first-visit appearance, which would steal
  * focus from wherever the visitor already was.
  */
-export default function ConsentBanner() {
+export default function ConsentBanner({ region }: { region: ConsentRegion }) {
   const { choice, isPanelOpen, isVisible, accept, reject, closeSettings } = useConsent();
   const panelRef = useRef<HTMLDivElement>(null);
   const wasPanelOpenRef = useRef(false);
@@ -34,6 +34,7 @@ export default function ConsentBanner() {
   if (!isVisible) return null;
 
   const canDismiss = choice !== null;
+  const consentRequired = region === "consent-required";
 
   return (
     <div ref={panelRef} role="region" aria-label="Cookie consent" className="consent-banner neon-border">
@@ -48,15 +49,17 @@ export default function ConsentBanner() {
         </button>
       )}
       <p className="consent-banner-text">
-        This site uses cookies, including Google AdSense advertising cookies. Choose Accept or Reject, or read
-        the <Link href="/privacy">Privacy Policy</Link>.
+        {consentRequired
+          ? "This site uses cookies, including Google AdSense advertising cookies. Choose Accept or Reject, or read the "
+          : "This site uses cookies, including Google AdSense advertising cookies, which are on unless you turn them off. Read the "}
+        <Link href="/privacy">Privacy Policy</Link>.
       </p>
       <div className="consent-banner-actions">
         <button type="button" onClick={reject} className="consent-banner-btn">
-          REJECT
+          {consentRequired ? "REJECT" : "TURN OFF ADS"}
         </button>
         <button type="button" onClick={accept} className="consent-banner-btn consent-banner-btn--accept">
-          ACCEPT
+          {consentRequired ? "ACCEPT" : "GOT IT"}
         </button>
       </div>
     </div>

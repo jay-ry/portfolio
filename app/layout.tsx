@@ -6,6 +6,7 @@ import Nav from "@/components/Nav";
 import SiteFooter from "@/components/SiteFooter";
 import ConsentBanner from "@/components/consent/ConsentBanner";
 import AdSenseScript from "@/components/consent/AdSenseScript";
+import { consentRegion } from "@/lib/consentRegion";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://jayandrade.com"),
@@ -18,7 +19,9 @@ export const metadata: Metadata = {
   other: { "google-adsense-account": "ca-pub-6779169274814993" },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const region = await consentRegion();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -30,13 +33,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="scanlines">
-        <AdSenseScript />
+        <AdSenseScript region={region} />
         <Providers>
           <Cursor />
           <Nav />
           {children}
           <SiteFooter />
-          <ConsentBanner />
+          <ConsentBanner region={region} />
         </Providers>
       </body>
     </html>
