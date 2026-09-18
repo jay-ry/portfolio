@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContentPage from "@/components/ContentPage";
+import { projects } from "@/lib/portfolio-data";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -7,25 +8,22 @@ export const metadata: Metadata = {
   alternates: { canonical: "/projects" },
 };
 
-const projects = [
-  { id: "001", name: "ASTROBARISTAS", status: "LIVE", desc: "A full-stack website for a coffee brand, with a dynamic menu, team profiles, and a custom content management experience.", stack: "MongoDB · Express · React · Node.js" },
-  { id: "002", name: "CARDUINO", status: "BUILT", desc: "A smart-car prototype built on Arduino Uno, combining autonomous obstacle avoidance, sensor input, and real-time motor control.", stack: "Arduino · C++ · Hardware · IoT" },
-  { id: "003", name: "CHESS ENGINE", status: "BUILT", desc: "A playable chess game with a custom algorithmic opponent using Minimax, alpha-beta pruning, piece-square tables, move ordering, and iterative deepening.", stack: "Python · Pygame · python-chess" },
-  { id: "004", name: "JEOPARDY.APP", status: "BUILT", desc: "A real-time multiplayer Jeopardy platform where hosts create rooms and players join on mobile to buzz in live.", stack: "React · Socket.io · Express · PostgreSQL" },
-  { id: "005", name: "BIZ-BOT", status: "BUILT", desc: "A multi-tenant chatbot platform for local businesses, with an embeddable assistant, retrieval-powered responses, business data ingestion, analytics, and organisation management.", stack: "Next.js · Hono · Drizzle · PostgreSQL" },
-  { id: "006", name: "TRADEWISE", status: "IN PROGRESS", desc: "A stock and crypto trading platform for portfolio tracking, trade review, market insights, and algorithmic strategies that execute on defined triggers.", stack: "Python · FastAPI · Next.js" },
-];
+// Tradewise is deliberately shown as "IN PROGRESS" here rather than the internal "WIP" status value.
+const STATUS_LABELS: Record<string, string> = { WIP: "IN PROGRESS" };
 
 export default function ProjectsPage() {
   return (
     <ContentPage code="004" label="PROJECTS" title="DEPLOYED SYSTEMS." intro="Selected work across full-stack applications, real-time experiences, algorithms, AI-enabled products, and hardware.">
+      <section className="content-panel">
+        <p><strong>LIVE</strong> — deployed and in production. <strong>BUILT</strong> — complete and fully functional. <strong>IN PROGRESS</strong> — actively in development.</p>
+      </section>
       <div className="project-page-grid">
         {projects.map(project => (
           <article className="content-panel project-page-card" key={project.id}>
-            <div className="project-page-meta"><span>{project.id}</span><span>{project.status}</span></div>
+            <div className="project-page-meta"><span>{project.id}</span><span>{STATUS_LABELS[project.status] ?? project.status}</span></div>
             <h2>{project.name}</h2>
             <p>{project.desc}</p>
-            <p className="project-stack">{project.stack}</p>
+            <p className="project-stack">{project.stack.join(" · ")}</p>
           </article>
         ))}
       </div>

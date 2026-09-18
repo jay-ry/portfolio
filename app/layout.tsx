@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
 import Cursor from "@/components/Cursor";
 import Nav from "@/components/Nav";
 import SiteFooter from "@/components/SiteFooter";
+import ConsentBanner from "@/components/consent/ConsentBanner";
+import AdSenseScript from "@/components/consent/AdSenseScript";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://jayandrade.com"),
@@ -29,18 +30,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="scanlines">
-        <Script
-          id="google-adsense"
-          async
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6779169274814993"
-        />
+        <AdSenseScript />
         <Providers>
           <Cursor />
           <Nav />
           {children}
           <SiteFooter />
+          <ConsentBanner />
         </Providers>
       </body>
     </html>

@@ -1,11 +1,12 @@
 "use client";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import Link from "next/link";
 
 const projects = [
   {
     id: "001",
     name: "ASTROBARISTAS",
-    desc: "Full-stack team website for a coffee brand — built end-to-end with the MERN stack. Features a dynamic menu, team profiles, and a custom CMS for content management.",
+    desc: "Full-stack coffee-brand site with a dynamic menu and a custom CMS.",
     stack: ["MongoDB", "Express", "React", "Node.js"],
     status: "LIVE",
     color: "var(--accent)",
@@ -13,7 +14,7 @@ const projects = [
   {
     id: "002",
     name: "CARDUINO",
-    desc: "Hardware-software smart car prototype built on Arduino Uno — autonomous obstacle avoidance, sensor fusion, and real-time motor control.",
+    desc: "Arduino-based smart car with autonomous obstacle avoidance and sensor fusion.",
     stack: ["Arduino", "C++", "Hardware", "IoT"],
     status: "BUILT",
     color: "var(--accent)",
@@ -21,7 +22,7 @@ const projects = [
   {
     id: "003",
     name: "CHESS ENGINE",
-    desc: "Fully playable chess game with a custom AI opponent — Minimax with Alpha-Beta Pruning, piece-square tables, move ordering, and iterative deepening. Pure algorithmic AI, no ML.",
+    desc: "A from-scratch chess AI using Minimax and alpha-beta pruning — no ML.",
     stack: ["Python", "Pygame", "python-chess"],
     status: "BUILT",
     color: "var(--accent3)",
@@ -29,7 +30,7 @@ const projects = [
   {
     id: "004",
     name: "JEOPARDY.APP",
-    desc: "Real-time multiplayer Jeopardy platform — hosts generate room codes, players join on mobile and buzz in live. Full game state machine, WebSocket events, and custom board generation.",
+    desc: "Real-time multiplayer Jeopardy with live buzz-ins and custom boards.",
     stack: ["React", "Socket.io", "Express", "PostgreSQL", "Prisma"],
     status: "BUILT",
     color: "var(--accent2)",
@@ -37,7 +38,7 @@ const projects = [
   {
     id: "005",
     name: "BIZ-BOT",
-    desc: "Multi-tenant AI chatbot platform for local businesses — embeddable widget with RAG-powered responses, business data ingestion, analytics dashboard, and organisation management.",
+    desc: "Multi-tenant AI chatbot platform with RAG-powered business support.",
     stack: ["Next.js", "Hono", "Drizzle", "PostgreSQL"],
     status: "BUILT",
     color: "var(--accent)",
@@ -45,7 +46,7 @@ const projects = [
   {
     id: "006",
     name: "TRADEWISE",
-    desc: "AI-powered stock and crypto trading platform — real-time portfolio tracking, an AI coach reviewing your trades, an AI analyst surfacing live insights, and algorithmic strategies that execute on trigger.",
+    desc: "AI-powered trading platform with portfolio tracking and algo strategies.",
     stack: ["Python", "FastAPI", "Next.js", "AI"],
     status: "WIP",
     color: "var(--accent3)",
@@ -155,9 +156,14 @@ const Projects = forwardRef<ProjectsHandle>((_, ref) => {
         ))}
       </div>
 
-      <div style={{ marginTop: "1.5rem", flexShrink: 0, fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--text-muted)" }}>
-        <span style={{ color: "var(--accent)" }}>06</span> / 06 PROJECTS LOADED
-        <span style={{ marginLeft: "2rem", opacity: 0.4 }}>← SCROLL →</span>
+      <div style={{ marginTop: "1.5rem", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--text-muted)" }}>
+        <span>
+          <span style={{ color: "var(--accent)" }}>06</span> / 06 PROJECTS LOADED
+          <span style={{ marginLeft: "2rem", opacity: 0.4 }}>← SCROLL →</span>
+        </span>
+        <Link href="/projects" style={{ color: "var(--accent)", letterSpacing: "0.12em", textDecoration: "none" }}>
+          FULL CASE STUDIES →
+        </Link>
       </div>
     </section>
   );

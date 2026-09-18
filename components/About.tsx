@@ -1,5 +1,6 @@
 "use client";
 import { forwardRef, useImperativeHandle, useRef } from "react";
+import Link from "next/link";
 
 export type AboutHandle = {
   section:    HTMLElement;
@@ -48,18 +49,15 @@ const About = forwardRef<AboutHandle>((_, ref) => {
 
       <div ref={bioRef} style={{ maxWidth: "600px", marginBottom: "2.5rem" }}>
         <p style={{ fontFamily: "var(--font-body)", fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.9, letterSpacing: "0.03em", marginBottom: "1.25rem" }}>
-          I'm Jay — a Full-Stack Developer who builds things end-to-end. From MERN-stack web apps
-          and hardware prototypes to AI chatbots with RAG pipelines and real-time multiplayer
-          platforms, I gravitate toward projects that are technically interesting and actually ship.
+          I'm Jay — a Full-Stack Developer who ships end-to-end, from MERN-stack apps and hardware
+          prototypes to AI chatbots and real-time platforms. Currently building at Potential in Dubai.
         </p>
-        <p style={{ fontFamily: "var(--font-body)", fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.9, letterSpacing: "0.03em", marginBottom: "1.25rem" }}>
-          Currently a Junior Web Developer at Potential, building full-stack applications across
-          the whole product lifecycle.
-        </p>
-        <p style={{ fontFamily: "var(--font-body)", fontSize: "16px", color: "var(--text-muted)", lineHeight: 1.9, letterSpacing: "0.03em" }}>
-          I care about clean architecture, fast iteration, and writing software that holds up
-          in production.
-        </p>
+        <Link
+          href="/about"
+          style={{ fontFamily: "var(--font-mono)", fontSize: "12px", letterSpacing: "0.12em", color: "var(--accent)", textDecoration: "none" }}
+        >
+          READ THE FULL STORY →
+        </Link>
       </div>
 
       <div ref={chipsRef} style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>

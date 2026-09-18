@@ -5,10 +5,11 @@
  * source of truth for portfolio content and must remain importable from BOTH
  * client components and server route handlers (e.g. the AI chat API).
  *
- * All values are transcribed verbatim from the presentational components:
- *   components/Hero.tsx, About.tsx, Skills.tsx, Projects.tsx,
- *   components/Experience.tsx, Contact.tsx
- * Do not reword or embellish — this data grounds an AI chatbot.
+ * `profile.bio` and `projects[].desc`/`stack` are the full-detail copy,
+ * rendered directly on the standalone /about and /projects pages. The
+ * homepage sections (About.tsx, Projects.tsx) show their own short teaser
+ * copy instead of this text, to avoid duplicating it in full on both pages.
+ * Do not reword or embellish this data — it also grounds an AI chatbot.
  */
 
 // ---------------------------------------------------------------------------

@@ -394,3 +394,91 @@ body {
 }
 
 /* ===== /AI GUIDE SECTION ===== */
+
+/* ===== CONSENT ===== */
+
+@keyframes consentSlideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.consent-banner {
+  position: fixed;
+  z-index: 2500;
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--panel-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: consentSlideUp 0.32s ease-out both;
+}
+
+.consent-banner-text { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; flex: 1 1 260px; }
+.consent-banner-text a { color: var(--accent); }
+
+.consent-banner-actions { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; margin-left: auto; }
+
+.consent-banner-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: color 0.2s, border-color 0.2s;
+}
+.consent-banner-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+.consent-banner-btn--accept { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+.consent-banner-btn--accept:hover { box-shadow: var(--glow); }
+
+.consent-banner-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0.3rem;
+  order: -1;
+}
+.consent-banner-close:hover { color: var(--accent); }
+
+.consent-banner a:focus-visible,
+.consent-banner button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.consent-settings-link {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+.consent-settings-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 640px) {
+  .consent-banner { left: 0.75rem; right: 0.75rem; bottom: 0.75rem; flex-direction: column; align-items: stretch; }
+  .consent-banner-actions { justify-content: flex-end; margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .consent-banner { animation: none !important; }
+}
+
+/* ===== /CONSENT ===== */

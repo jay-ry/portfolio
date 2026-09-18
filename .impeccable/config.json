@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "app/globals.css"
+        ],
+        "createdAt": "2026-09-18T11:00:40.389Z",
+        "reason": "Pre-existing in HEAD, untouched by this work; deliberate JAY.OS retro-terminal aesthetic alongside .scanline and glitch keyframes in the same file."
+      }
+    ]
+  }
+}
